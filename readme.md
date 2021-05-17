@@ -26,11 +26,11 @@ const settings = {
 	itemsContainers: [
 		{
 			element: document.querySelectorAll('.collage__items')[0],
-			images: imagesLeft
+			images: imagesLeft // allImages.slice(0,4);
 		},
 		{
 			element: document.querySelectorAll('.collage__items')[1],
-			images: imagesRight
+			images: imagesRight // allImages.slice(4,8);
 		},
 	],
 	canvasBG: 'img/bg.png',
