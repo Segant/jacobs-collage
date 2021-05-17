@@ -20,17 +20,20 @@ const allImages = [
 
 settings
 ```
+const imagesLeft = allImages.slice(0,4);
+const imagesRight = allImages.slice(4,8);
+
 const settings = {
 	images: allImages,
 	canvasWrapper: document.querySelector('.cavnas-here'),
 	itemsContainers: [
 		{
 			element: document.querySelectorAll('.collage__items')[0],
-			images: imagesLeft // allImages.slice(0,4);
+			images: imagesLeft
 		},
 		{
 			element: document.querySelectorAll('.collage__items')[1],
-			images: imagesRight // allImages.slice(4,8);
+			images: imagesRight
 		},
 	],
 	canvasBG: 'img/bg.png',
