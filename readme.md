@@ -1,3 +1,21 @@
+
+```
+const allImages = [
+	{
+		src: 'img/avatar.png',
+		id: 11,
+		type: 'avatar',
+	},
+	{
+		src: 'img/1.png',
+		id: 1,
+	},
+	{
+		src: 'img/2.png',
+		id: 2,
+	},
+]
+
 const settings = {
 	images: allImages,
 	canvasWrapper: document.querySelector('.cavnas-here'),
@@ -15,3 +33,4 @@ const settings = {
 }
 
 collage(settings, callback)
+```
