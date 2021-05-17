@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>demo</title>
+	<link rel="stylesheet" href="main.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/konva/7.2.5/konva.min.js"></script>
+</head>
+<body>
+	<div class="collage">
+		<div class="collage-inner">
+			<div class="collage__items"></div>
+			<div class="cavnas-here collage__canvas-holder">
+				<canvas></canvas>
+			</div>
+			<div class="collage__items"></div>
+		</div>
+	</div>
+	<button id="clear">clear canvas</button>
+	<button id="screenshot">screenshot canvas</button>
+	
+
+	<script src="main.js"></script>
+	<script>
+		const allImages = [
+			{
+				src: 'img/avatar.png',
+				id: 11,
+				type: 'avatar',
+			},
+			{
+				src: 'img/1.png',
+				id: 1,
+			},
+			{
+				src: 'img/2.png',
+				id: 2,
+			},
+			{
+				src: 'img/3.png',
+				id: 3,
+			},
+			{
+				src: 'img/4.png',
+				id: 4,
+			},
+			{
+				src: 'img/5.png',
+				id: 5,
+			},
+			{
+				src: 'img/6.png',
+				id: 6,
+			},
+			{
+				src: 'img/7.png',
+				id: 7,
+			},
+			{
+				src: 'img/8.png',
+				id: 8,
+			},
+		]
+		const imagesLeft = allImages.slice(0,4);
+		const imagesRight = allImages.slice(4,8);
+
+		document.addEventListener('DOMContentLoaded', () => {
+			let c = collage({
+				images: allImages,
+				canvasWrapper: document.querySelector('.cavnas-here'),
+				itemsContainers: [
+					{
+						element: document.querySelectorAll('.collage__items')[0],
+						images: imagesLeft
+					},
+					{
+						element: document.querySelectorAll('.collage__items')[1],
+						images: imagesRight
+					},
+				],
+				canvasBG: 'img/bg.png',
+			});
+
+			console.log(c);
+
+			clear.addEventListener('click', function (e) {
+				console.log(c.reset());
+			})
+
+			screenshot.addEventListener('click', function (e) {
+				console.log(c.makeScreenshot());
+			})
+		});
+	</script>
+</body>
+</html>

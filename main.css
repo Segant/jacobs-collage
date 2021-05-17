@@ -1,0 +1,49 @@
+ 
+html {
+	font-size: calc(100vw / 1440);
+}
+
+body{
+	margin: 0;
+	padding: 0;
+}
+
+.collage-inner{
+	display: flex;
+}
+.collage__items {
+	/* width: 1rem; */
+	background-color: #F8F6EE;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap; 
+	align-items: flex-start;
+	align-content: flex-start;
+	
+	padding: 20rem;
+}
+
+.collage__items:nth-child(1){
+	justify-content: flex-end;
+}
+
+.collage__items img{
+	padding: 5rem;
+	user-select: none;
+}
+
+.collage-item.active{
+	opacity: 0;
+}
+
+.cavnas-here {
+	flex-shrink: 0;
+	width: 560rem;
+	height: 560rem;
+}
+.collage__canvas-holder {
+}
+
+.collage-avatar{
+	position: relative;
+}
