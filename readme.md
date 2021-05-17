@@ -1,4 +1,5 @@
 
+images
 ```
 const allImages = [
 	{
@@ -15,7 +16,10 @@ const allImages = [
 		id: 2,
 	},
 ]
+```
 
+settings
+```
 const settings = {
 	images: allImages,
 	canvasWrapper: document.querySelector('.cavnas-here'),
@@ -31,6 +35,11 @@ const settings = {
 	],
 	canvasBG: 'img/bg.png',
 }
+```
 
+and function that returns {reset, makeScreenshot}
+```
 collage(settings, callback)
 ```
+
+more detail example in index.html
