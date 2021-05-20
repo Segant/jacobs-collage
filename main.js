@@ -9,6 +9,82 @@ function makeid(length) {
 	return result.join('');
 }
 
+function getCrop(image, size, clipPosition = 'center-middle') {
+	const width = size.width;
+	const height = size.height;
+	const aspectRatio = width / height;
+
+	let newWidth;
+	let newHeight;
+
+	const imageRatio = image.width / image.height;
+
+	if (aspectRatio >= imageRatio) {
+		newWidth = image.width;
+		newHeight = image.width / aspectRatio;
+	} else {
+		newWidth = image.height * aspectRatio;
+		newHeight = image.height;
+	}
+
+	let x = 0;
+	let y = 0;
+	if (clipPosition === 'left-top') {
+		x = 0;
+		y = 0;
+	} else if (clipPosition === 'left-middle') {
+		x = 0;
+		y = (image.height - newHeight) / 2;
+	} else if (clipPosition === 'left-bottom') {
+		x = 0;
+		y = image.height - newHeight;
+	} else if (clipPosition === 'center-top') {
+		x = (image.width - newWidth) / 2;
+		y = 0;
+	} else if (clipPosition === 'center-middle') {
+		x = (image.width - newWidth) / 2;
+		y = (image.height - newHeight) / 2;
+	} else if (clipPosition === 'center-bottom') {
+		x = (image.width - newWidth) / 2;
+		y = image.height - newHeight;
+	} else if (clipPosition === 'right-top') {
+		x = image.width - newWidth;
+		y = 0;
+	} else if (clipPosition === 'right-middle') {
+		x = image.width - newWidth;
+		y = (image.height - newHeight) / 2;
+	} else if (clipPosition === 'right-bottom') {
+		x = image.width - newWidth;
+		y = image.height - newHeight;
+	} else if (clipPosition === 'scale') {
+		x = 0;
+		y = 0;
+		newWidth = width;
+		newHeight = height;
+	} else {
+		console.error(
+			new Error('Unknown clip position property - ' + clipPosition)
+		);
+	}
+
+	return {
+		cropX: x,
+		cropY: y,
+		cropWidth: newWidth,
+		cropHeight: newHeight,
+	};
+}
+
+function rem(valueInPx) {
+	res = (window.innerWidth / 1440) * valueInPx
+	
+	if(window.innerWidth == 376){
+		res = (window.innerWidth / 376) * valueInPx
+	}
+	// res =  valueInPx
+	return res;
+}
+
 function collage(settings, callback) {
 	const { images, canvasWrapper, itemsContainers, canvasBG } = settings;
 	const canvas = canvasWrapper.children[0];
@@ -18,9 +94,13 @@ function collage(settings, callback) {
 			const imagesTemplate = itemContainer.images.reduce((acc, img) => {
 				if (img.type == 'avatar') {
 					acc += `
-						<div class="collage-avatar">
-							<div class='collage-avatar-userpic'></div>
-							<img data-id='${img.id}' data-type='${img.type || "image"}' class='collage-item' src='${img.src}'/>
+						<div class="collage-avatar collage-item" data-type='${img.type}' data-id='${img.id}' data-border-src='${img.src}'>
+							<input class='collage-avatar__input'  type='file'></input>
+							<div class='collage-avatar-userpic'>
+								<img class='collage-avatar-userpic__img' src=''/>
+							</div>
+							<img class='collage-avatar__pin' src='${img.srcPin}' />
+							<img src='${img.src}'/>
 						</div>
 					`;
 
@@ -39,7 +119,7 @@ function collage(settings, callback) {
 		canvas.height = canvasWrapper.offsetHeight;
 	}
 
-	function prepareCanvas() {
+	function placeBackground() {
 		let img = new Image(canvas.width, canvas.height);
 
 		img.onload = function () {
@@ -79,9 +159,8 @@ function collage(settings, callback) {
 		name: 'transformer',
 		anchorStroke: 'white',
 		anchorFill: 'white',
-		anchorSize: 10,
+		anchorSize: 9,
 		borderStroke: 'white',
-		// borderDash: [3, 3],
 		enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
 		nodes: [],
 	}
@@ -92,7 +171,7 @@ function collage(settings, callback) {
 
 	layer.add(content);
 
-	prepareCanvas();
+	placeBackground();
 
 	window.stage = stage
 
@@ -123,31 +202,135 @@ function collage(settings, callback) {
 	}
 
 	const addPhoto = (item) => {
+		const photo = new Image(item.width, item.height);
+		const borderImg = item.parentElement.parentElement.querySelectorAll('img')[2]
+		const border = new Image(borderImg.width, borderImg.height);
+		const pinImg = item.parentElement.parentElement.querySelector('.collage-avatar__pin');
+		const pin = new Image(pinImg.width, pinImg.height);
 
+		border.src = borderImg.src;
+		photo.src = item.src;
+		pin.src = pinImg.src;
+
+		const group = new Konva.Group({
+			name: 'item photo',
+			x: canvas.width / 2 - (item.width / 2),
+			y: canvas.height / 2 - (item.height / 2),
+			draggable: true,
+		});
+
+		content.add(group);
+
+		let borderBG;
+
+		new Promise((res, rej) => {
+			border.onload = function () {
+				console.log('photo-bg');
+				let borderBG = new Konva.Image({
+					name: 'item photo-bg',
+					image: border,
+					width: borderImg.width,
+					height: borderImg.height,
+				});
+
+				group.add(borderBG);
+
+				res(group);
+			}
+		}).then((r) => {
+			return new Promise((res, rej) => {
+				console.log('photo-img');
+				let photoImg = new Konva.Image({
+					name: 'photo-img',
+					image: photo,
+					width: item.width,
+					height: item.height,
+					x: rem(12),
+					y: rem(13),
+				});
+			
+				// const crop = getCrop(
+				// 	photoImg.image(),
+				// 	{ width: photoImg.width(), height: photoImg.height() },
+				// 	'center-middle'
+				// );
+
+				// photoImg.setAttrs(crop)
+
+				group.add(photoImg);
+				res(r)
+			})
+		}).then((r) => {
+			return new Promise((res, rej) => {
+				console.log('pin-img');
+				let pinImg = new Konva.Image({
+					name: 'pin-img',
+					image: pin,
+					width: pin.width,
+					height: pin.height,
+					x: (borderImg.width / 2) - pin.width / 2,
+					y: rem(-24),
+				});
+
+				group.add(pinImg);
+				res(r)
+				layer.batchDraw();
+			})
+		}).then((r) => {
+			layer.batchDraw();
+			transformer.nodes([r])
+		})
+		
 	}
 
-	const placeImageToAvatar = () => {
+	const placeImageToAvatar = (e) => {
+		console.dir(e.target);
+		e.target.onchange = evt => {
+			const [file] = e.target.files
+			if (file) {
+				if (!(file.type == 'image/png' || file.type == 'image/jpeg')) {
+					return console.error('file must be .png or .jpg');
+				}
 
+				document.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(file);
+				e.target.parentNode.classList.add('has-photo')
+			}
+		}
 	}
 
+	// handling item containers
 	itemsContainers.forEach(itemContainer => {
 		itemContainer.element.addEventListener('click', function (e) {
 			if (e.target.classList.contains('collage-item') && !(e.target.classList.contains('active'))) {
-				if (e.target.dataset.type == 'avatar') {
-					// e.target.classList.contains('has-photo')
+				e.target.classList.add('active');
+				addItem(e.target);
+
+				return
+			}
+
+			if (e.target.classList.contains('collage-avatar__input')) {
+				if (!e.target.parentElement.classList.contains('has-photo')) {
+					placeImageToAvatar(e);
 					return
 				}
 
-				e.target.classList.add('active');
-				addItem(e.target);
+				e.preventDefault();
+				// e.target.parentElement.classList.add('active');
+				const userImg = e.target.parentElement.children[1].children[0];
+				addPhoto(userImg);
+
+				return
 			}
 		})
 	});
 
+
+	// handling canvas
 	stage.on('click tap dragstart', function (e) {
 		let shape = e.target;
 		if (shape.name() == 'scene-bg') {
 			transformer.visible(false);
+
 			layer.draw();
 		}
 		if (shape.name() == 'item') {
@@ -159,7 +342,12 @@ function collage(settings, callback) {
 
 			layer.draw();
 		}
+
+		if(settings.isMobile){
+			transformer.visible(false);
+		}
 	});
+
 
 	function resetCollage() {
 		document.querySelectorAll('.collage-item').forEach(el => el.classList.remove('active'));

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
 	<link rel="stylesheet" href="main.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/konva/7.2.5/konva.min.js"></script>
 </head>
+
 <body>
 	<div class="collage">
 		<div class="collage-inner">
@@ -16,17 +18,18 @@
 				<canvas></canvas>
 			</div>
 			<div class="collage__items"></div>
+			<div class="collage__mobile-items"></div>
 		</div>
 	</div>
 	<button id="clear">clear canvas</button>
 	<button id="screenshot">screenshot canvas</button>
-	
+
 
 	<script src="main.js"></script>
 	<script>
-		const allImages = [
-			{
-				src: 'img/avatar.png',
+		const allImages = [{
+				src: 'img/ava-border.png',
+				srcPin: 'img/ava-pin.png',
 				id: 11,
 				type: 'avatar',
 			},
@@ -63,36 +66,58 @@
 				id: 8,
 			},
 		]
-		const imagesLeft = allImages.slice(0,4);
-		const imagesRight = allImages.slice(4,8);
+		const imagesLeft = allImages.slice(0, 4);
+		const imagesRight = allImages.slice(4, 8);
 
 		document.addEventListener('DOMContentLoaded', () => {
-			let c = collage({
-				images: allImages,
-				canvasWrapper: document.querySelector('.cavnas-here'),
-				itemsContainers: [
-					{
-						element: document.querySelectorAll('.collage__items')[0],
-						images: imagesLeft
-					},
-					{
-						element: document.querySelectorAll('.collage__items')[1],
-						images: imagesRight
-					},
-				],
-				canvasBG: 'img/bg.png',
-			});
+			if (window.innerWidth <= 1024) {
+				let collageMobile = collage({
+					images: allImages,
+					isMobile: true,
+					canvasWrapper: document.querySelector('.cavnas-here'),
+					itemsContainers: [{
+							element: document.querySelectorAll('.collage__mobile-items')[0],
+							images: allImages
+						},
+					],
+					canvasBG: 'img/bg.png',
+				});
 
-			console.log(c);
+				clear.addEventListener('click', function (e) {
+					collageMobile.reset();
+				})
 
-			clear.addEventListener('click', function (e) {
-				c.reset();
-			})
+				screenshot.addEventListener('click', function (e) {
+					collageMobile.makeScreenshot();
+				})
+			} else {
+				let collageDesktop = collage({
+					images: allImages,
+					canvasWrapper: document.querySelector('.cavnas-here'),
+					itemsContainers: [{
+							element: document.querySelectorAll('.collage__items')[0],
+							images: imagesLeft
+						},
+						{
+							element: document.querySelectorAll('.collage__items')[1],
+							images: imagesRight
+						},
+					],
+					canvasBG: 'img/bg.png',
+				});
 
-			screenshot.addEventListener('click', function (e) {
-				c.makeScreenshot();
-			})
+				clear.addEventListener('click', function (e) {
+					collageDesktop.reset();
+				})
+
+				screenshot.addEventListener('click', function (e) {
+					collageDesktop.makeScreenshot();
+				})
+			}
+
+
 		});
 	</script>
 </body>
+
 </html>
