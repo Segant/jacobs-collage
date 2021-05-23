@@ -324,7 +324,6 @@ function collage(settings, callback) {
 		})
 	});
 
-
 	// handling canvas
 	stage.on('click tap dragstart', function (e) {
 		let shape = e.target;

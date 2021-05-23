@@ -6,6 +6,7 @@ html {
 body{
 	margin: 0;
 	padding: 0;
+	font-size: 16rem;
 }
 
 .collage-inner{
@@ -113,6 +114,82 @@ body{
 	opacity: 0;
 }
 
+.collage-mobile-items {
+	display: none;
+	position: absolute;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, .9);
+	color: white;
+	padding: 19rem 20rem 30rem;
+	width: 100%;
+	height: 85%;
+	overflow: scroll;
+	box-sizing: border-box;
+	border-radius: 20rem 20rem 0 0;
+
+	transition: all .3s ease-in;
+
+	/* transform: translateY(100%); */
+}
+
+.collage-mobile-items::after{
+	content: '';
+	position: fixed;
+	width: 100%;
+	height: 30%;
+	left: 0;
+	bottom: 0;
+	margin: auto;
+	pointer-events: none;
+	/* z-index: -1; */
+	
+	background: linear-gradient(0deg, rgba(0, 0, 0, 1) 80rem, rgba(0, 0, 0, 0) 100%);
+	
+}
+
+.collage-mobile-items__desc {
+	text-align: center;
+	margin-bottom: 30rem;
+}
+.collage-mobile-items__inner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	padding-bottom: 100rem;
+}
+.collage-mobile-items__close {
+	position: fixed;
+	bottom: 30rem;
+	z-index: 1;
+	border: none;
+	background: transparent;
+	font-weight: bold;
+	font-size: 13rem;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	padding-left: 15rem;
+}
+
+.collage-mobile-items__close::after{
+	content: '';
+	position: absolute;
+	width: 12rem;
+	height: 12rem;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	background-image: url('img/close-curtain.svg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	
+}
+
+#curtain{
+	display: none;
+}
+
 
 @media(max-width: 1024px){
 
@@ -134,12 +211,33 @@ body{
 	}
 
 	.collage__mobile-items{
-		display: flex;
+		/* display: flex; */
 		flex-wrap: wrap;
 		align-items: flex-start;
 	}
 
 	.collage__mobile-items > div, .collage__mobile-items > img{
-		flex-grow: 1;
+		/* flex-grow: 1; */
 	}
+
+	.collage-mobile-items {
+		/* display: flex; */
+		flex-direction: column;
+		flex-wrap: nowrap;
+		align-items: center;
+		pointer-events: none;
+		opacity: 0;
+	}
+
+	.collage-mobile-items.active{
+		display: flex;
+		opacity: 1;
+		pointer-events: all;
+	}
+
+	#curtain{
+		display: block;
+	}
+
+	
 }

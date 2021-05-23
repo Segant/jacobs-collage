@@ -18,14 +18,24 @@
 				<canvas></canvas>
 			</div>
 			<div class="collage__items"></div>
-			<div class="collage__mobile-items"></div>
+			<div class="collage__mobile-items collage-mobile-items">
+				<div class="collage-mobile-items__desc">
+					Просто нажимай на стикеры,<br>
+					и они появятся на твоей Карте Мечты
+				</div>
+				<div class="collage-mobile-items__inner">
+
+				</div>
+				<button class="collage-mobile-items__close">закрыть</button>
+			</div>
 		</div>
 	</div>
 	<button id="clear">clear canvas</button>
 	<button id="screenshot">screenshot canvas</button>
+	<button id='curtain'>show curtain</button>
 
 
-	<script src="main.js"></script>
+	<script src="collage.js"></script>
 	<script>
 		const allImages = [{
 				src: 'img/ava-border.png',
@@ -76,7 +86,7 @@
 					isMobile: true,
 					canvasWrapper: document.querySelector('.cavnas-here'),
 					itemsContainers: [{
-							element: document.querySelectorAll('.collage__mobile-items')[0],
+							element: document.querySelectorAll('.collage-mobile-items__inner')[0],
 							images: allImages
 						},
 					],
@@ -89,6 +99,15 @@
 
 				screenshot.addEventListener('click', function (e) {
 					collageMobile.makeScreenshot();
+				})
+				
+				let curtainClass = document.querySelector('.collage-mobile-items').classList
+				curtain.addEventListener('click', function (e) {
+					curtainClass.add('active');
+				})
+
+				document.querySelector('.collage-mobile-items__close').addEventListener('click', function(e){
+					curtainClass.remove('active');
 				})
 			} else {
 				let collageDesktop = collage({
