@@ -77,8 +77,8 @@ function getCrop(image, size, clipPosition = 'center-middle') {
 
 function rem(valueInPx) {
 	res = (window.innerWidth / 1440) * valueInPx
-	
-	if(window.innerWidth == 376){
+
+	if (window.innerWidth == 376) {
 		res = (window.innerWidth / 376) * valueInPx
 	}
 	// res =  valueInPx
@@ -120,24 +120,65 @@ function collage(settings, callback) {
 	}
 
 	function placeBackground() {
-		let img = new Image(canvas.width, canvas.height);
+		new Promise((res, rej) => {
+			let img = new Image(canvas.width, canvas.height);
+			img.src = canvasBG;
+			img.onload = function () {
+				console.log('img load');
+				let bgImg = new Konva.Image({
+					name: 'scene-bg',
+					x: 0,
+					y: 0,
+					image: img,
+					// width: canvas.width,
+					// height: canvas.height,
+				});
+				misc.add(bgImg);
+				layer.batchDraw();
+				res();
+			}
+		}).then(() => {
+			new Promise((res, rej) => {
+				let img = new Image(rem(60), rem(60));
+				img.src = document.querySelector('.collage-hidden__trash').src;
+				let w = rem(60);
+				let h = rem(60);
 
-		img.onload = function () {
-			console.log('img load');
-			let bgImg = new Konva.Image({
-				name: 'scene-bg',
-				x: 0,
-				y: 0,
-				image: img,
-				// width: canvas.width,
-				// height: canvas.height,
-			});
-			misc.add(bgImg);
-			layer.batchDraw();
+				img.onload = function () {
+					let canvImg = new Konva.Image({
+						name: 'trash',
+						x: rem(20),
+						y: canvas.height - h - rem(20),
+						image: img,
+						width: w,
+						height: h,
+						opacity: 0,
+					});
+					if(settings.isMobile){
+						canvImg.x(canvas.width / 2 - (w / 2));
+						canvImg.y(canvas.height - h - rem(13))
+					}
+					misc.add(canvImg);
+					layer.batchDraw();
+				}
+
+
+			})
+		})
+
+	}
+
+	function toggleTrash(state = 'hide'){
+		if(state == 'hide'){
+			stage.find('.trash').opacity(0)
+		}
+		if(state == 'show'){
+			stage.find('.trash').opacity(1)
 		}
 
-		img.src = canvasBG;
+		layer.draw();
 	}
+
 
 	prepareImages();
 
@@ -169,9 +210,12 @@ function collage(settings, callback) {
 	transformer = new Konva.Transformer(transformerSettings);
 	content.add(transformer);
 
+
+
 	layer.add(content);
 
 	placeBackground();
+
 
 	window.stage = stage
 
@@ -209,14 +253,22 @@ function collage(settings, callback) {
 		const pin = new Image(pinImg.width, pinImg.height);
 
 		border.src = borderImg.src;
-		photo.src = item.src;
+		// photo.src = item.src;
+
+		//debug
+		photo.src = 'img/6CbzmM-CLzU.jpg';
+		
 		pin.src = pinImg.src;
+		// transformer.nodes([])
 
 		const group = new Konva.Group({
 			name: 'item photo',
 			x: canvas.width / 2 - (item.width / 2),
 			y: canvas.height / 2 - (item.height / 2),
 			draggable: true,
+			data: {
+				id: item.parentElement.parentElement.dataset.id
+			}
 		});
 
 		content.add(group);
@@ -227,7 +279,7 @@ function collage(settings, callback) {
 			border.onload = function () {
 				console.log('photo-bg');
 				let borderBG = new Konva.Image({
-					name: 'item photo-bg',
+					name: 'photo photo-bg',
 					image: border,
 					width: borderImg.width,
 					height: borderImg.height,
@@ -241,21 +293,25 @@ function collage(settings, callback) {
 			return new Promise((res, rej) => {
 				console.log('photo-img');
 				let photoImg = new Konva.Image({
-					name: 'photo-img',
+					name: 'photo photo-img',
 					image: photo,
 					width: item.width,
 					height: item.height,
 					x: rem(12),
 					y: rem(13),
 				});
-			
-				// const crop = getCrop(
-				// 	photoImg.image(),
-				// 	{ width: photoImg.width(), height: photoImg.height() },
-				// 	'center-middle'
-				// );
 
-				// photoImg.setAttrs(crop)
+				console.log(photoImg.image());
+				const newCrop = getCrop(
+					photo,
+					{ width: photoImg.width(), height: photoImg.height() },
+					'center-middle'
+				);
+				
+				console.log(newCrop);
+				console.log(photoImg);
+
+				photoImg.setAttrs(newCrop)
 
 				group.add(photoImg);
 				res(r)
@@ -264,7 +320,7 @@ function collage(settings, callback) {
 			return new Promise((res, rej) => {
 				console.log('pin-img');
 				let pinImg = new Konva.Image({
-					name: 'pin-img',
+					name: 'photo pin-img',
 					image: pin,
 					width: pin.width,
 					height: pin.height,
@@ -278,9 +334,78 @@ function collage(settings, callback) {
 			})
 		}).then((r) => {
 			layer.batchDraw();
-			transformer.nodes([r])
+			r.width(r.getClientRect().width)
+			r.height(r.getClientRect().height)
+			// transformer.nodes([r])
 		})
-		
+
+	}
+
+	const touchScale = (canvasItem) => {
+		canvasItem.on('touchmove', function (e) {
+			e.evt.preventDefault();
+			var touch1 = e.evt.touches[0];
+			var touch2 = e.evt.touches[1];
+
+			if (touch1 && touch2) {
+				// if the stage was under Konva's drag&drop
+				// we need to stop it, and implement our own pan logic with two pointers
+				if (canvasItem.isDragging()) {
+					canvasItem.stopDrag();
+				}
+
+				var p1 = {
+					x: touch1.clientX,
+					y: touch1.clientY,
+				};
+				var p2 = {
+					x: touch2.clientX,
+					y: touch2.clientY,
+				};
+
+				if (!lastCenter) {
+					lastCenter = getCenter(p1, p2);
+					return;
+				}
+				var newCenter = getCenter(p1, p2);
+
+				var dist = getDistance(p1, p2);
+
+				if (!lastDist) {
+					lastDist = dist;
+				}
+
+				// local coordinates of center point
+				var pointTo = {
+					x: (newCenter.x - canvasItem.x()) / canvasItem.scaleX(),
+					y: (newCenter.y - canvasItem.y()) / canvasItem.scaleX(),
+				};
+
+				var scale = canvasItem.scaleX() * (dist / lastDist);
+
+				canvasItem.scaleX(scale);
+				canvasItem.scaleY(scale);
+
+				// calculate new position of the stage
+				var dx = newCenter.x - lastCenter.x;
+				var dy = newCenter.y - lastCenter.y;
+
+				var newPos = {
+					x: newCenter.x - pointTo.x * scale + dx,
+					y: newCenter.y - pointTo.y * scale + dy,
+				};
+
+				canvasItem.position(newPos);
+
+				lastDist = dist;
+				lastCenter = newCenter;
+			}
+		});
+
+		canvasItem.on('touchend', function () {
+			lastDist = 0;
+			lastCenter = null;
+		});
 	}
 
 	const placeImageToAvatar = (e) => {
@@ -309,14 +434,17 @@ function collage(settings, callback) {
 			}
 
 			if (e.target.classList.contains('collage-avatar__input')) {
-				if (!e.target.parentElement.classList.contains('has-photo')) {
-					placeImageToAvatar(e);
-					return
-				}
+
+				//debug
+				// if (!e.target.parentElement.classList.contains('has-photo')) {
+				// 	placeImageToAvatar(e);
+				// 	return
+				// }
 
 				e.preventDefault();
-				// e.target.parentElement.classList.add('active');
+				e.target.parentElement.classList.add('active');
 				const userImg = e.target.parentElement.children[1].children[0];
+
 				addPhoto(userImg);
 
 				return
@@ -324,27 +452,63 @@ function collage(settings, callback) {
 		})
 	});
 
-	// handling canvas
+	// handling canvas 
 	stage.on('click tap dragstart', function (e) {
 		let shape = e.target;
-		if (shape.name() == 'scene-bg') {
+		console.log(shape);
+		if (shape.hasName('scene-bg')) {
 			transformer.visible(false);
-
-			layer.draw();
+			toggleTrash('hide');
 		}
-		if (shape.name() == 'item') {
-			console.log('item');
+		
+		if (shape.hasName('item')) {
+			stage.find('.item').removeName('active');
+			console.log(shape);
+			shape.addName('active');
 			transformer.nodes([e.target]);
 			shape.moveToTop();
 			transformer.moveToTop();
 			transformer.visible(true);
-
+			toggleTrash('show');
+			
 			layer.draw();
 		}
+		
+		if(shape.hasName('photo')){
+			console.log(shape);
+			let photo = stage.find(node => {
+				return node.hasName('item') && node.hasName('photo');
+			})[0]
+			
+			console.log(photo);
+			photo.addName('active');
+			toggleTrash('show');
+			
+			transformer.nodes([photo]);
+			transformer.visible(true);
+			layer.draw();
 
-		if(settings.isMobile){
-			transformer.visible(false);
+			return
 		}
+		
+		if(shape.name() == 'trash'){
+			let activeNode = stage.find((node) => {
+				return node.hasName('item') && node.hasName('active');
+			})[0];
+			console.log(activeNode);
+			document.querySelector(`[data-id='${activeNode.attrs.data.id}']`).classList.remove('active');
+			activeNode.destroy();
+			console.log(shape);
+			transformer.nodes([]);
+			toggleTrash('hide');
+
+			layer.draw();
+		} 
+		
+		// if (settings.isMobile) {
+			// 	transformer.visible(false);
+			// }
+		layer.draw();
 	});
 
 
@@ -357,20 +521,25 @@ function collage(settings, callback) {
 		content.add(transformer);
 	}
 
-	function makeScreenshot() {
+	function makeScreenshot(callback) {
 		transformer.visible(false)
-		function downloadURI(uri, name) {
-			var link = document.createElement('a');
-			link.download = name;
-			link.href = uri;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			delete link;
-		}
+		// function downloadURI(uri, name) {
+		// 	var link = document.createElement('a');
+		// 	link.download = name;
+		// 	link.href = uri;
+		// 	document.body.appendChild(link);
+		// 	// link.click();
+		// 	// document.body.removeChild(link);
+		// 	// delete link;
+
+		// }
 		var dataURL = stage.toDataURL();
-		downloadURI(dataURL, `collage-${makeid(5)}.png`);
-		transformer.visible(true)
+		// downloadURI(dataURL, `collage-${makeid(5)}.png`);
+		transformer.visible(true);
+
+		if (callback) {
+			callback(dataURL);
+		}
 	}
 
 	stage.add(layer);
