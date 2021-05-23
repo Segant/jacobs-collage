@@ -253,10 +253,10 @@ function collage(settings, callback) {
 		const pin = new Image(pinImg.width, pinImg.height);
 
 		border.src = borderImg.src;
-		// photo.src = item.src;
+		photo.src = item.src;
 
 		//debug
-		photo.src = 'img/6CbzmM-CLzU.jpg';
+		// photo.src = 'img/6CbzmM-CLzU.jpg';
 		
 		pin.src = pinImg.src;
 		// transformer.nodes([])
@@ -302,16 +302,16 @@ function collage(settings, callback) {
 				});
 
 				console.log(photoImg.image());
-				const newCrop = getCrop(
-					photo,
-					{ width: photoImg.width(), height: photoImg.height() },
-					'center-middle'
-				);
+				// const newCrop = getCrop(
+				// 	photo,
+				// 	{ width: photoImg.width(), height: photoImg.height() },
+				// 	'center-middle'
+				// );
 				
-				console.log(newCrop);
+				// console.log(newCrop);
 				console.log(photoImg);
 
-				photoImg.setAttrs(newCrop)
+				// photoImg.setAttrs(newCrop)
 
 				group.add(photoImg);
 				res(r)
@@ -435,11 +435,10 @@ function collage(settings, callback) {
 
 			if (e.target.classList.contains('collage-avatar__input')) {
 
-				//debug
-				// if (!e.target.parentElement.classList.contains('has-photo')) {
-				// 	placeImageToAvatar(e);
-				// 	return
-				// }
+				if (!e.target.parentElement.classList.contains('has-photo')) {
+					placeImageToAvatar(e);
+					return
+				}
 
 				e.preventDefault();
 				e.target.parentElement.classList.add('active');
