@@ -41,7 +41,14 @@
 
 	<script src="collage.js"></script>
 	<script>
-		const allImages = [{
+		const allImages = [
+			{
+				src: 'img/ava-border.png',
+				srcPin: 'img/ava-pin.png',
+				id: 12,
+				type: 'avatar',
+			},
+			{
 				src: 'img/ava-border.png',
 				srcPin: 'img/ava-pin.png',
 				id: 11,
@@ -110,6 +117,17 @@
 				let curtainClass = document.querySelector('.collage-mobile-items').classList
 				curtain.addEventListener('click', function (e) {
 					curtainClass.add('active');
+				})
+
+				document.querySelector('.collage-mobile-items__inner').addEventListener('click', function(e){
+					let curClassList = e.target.classList
+					let curElem = e.target.closest('.collage-item');
+					if(curElem){
+						if(curElem.classList.contains('collage-avatar') && (!curElem.classList.contains('has-photo'))){
+							return
+						}
+						curtainClass.remove('active');
+					}
 				})
 
 				document.querySelector('.collage-mobile-items__close').addEventListener('click', function(e){

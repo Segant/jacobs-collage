@@ -81,7 +81,7 @@ function rem(valueInPx) {
 	if (window.innerWidth == 376) {
 		res = (window.innerWidth / 376) * valueInPx
 	}
-	// res =  valueInPx
+	res = valueInPx
 	return res;
 }
 
@@ -97,10 +97,10 @@ function collage(settings, callback) {
 						<div class="collage-avatar collage-item" data-type='${img.type}' data-id='${img.id}' data-border-src='${img.src}'>
 							<input class='collage-avatar__input'  type='file'></input>
 							<div class='collage-avatar-userpic'>
-								<img class='collage-avatar-userpic__img' src=''/>
+								<img class='collage-avatar-userpic__img'  src='' width="133rem" height="123rem"/>
 							</div>
 							<img class='collage-avatar__pin' src='${img.srcPin}' />
-							<img src='${img.src}'/>
+							<img class='collage-avatar__border' src='${img.src}'/>
 						</div>
 					`;
 
@@ -139,10 +139,10 @@ function collage(settings, callback) {
 			}
 		}).then(() => {
 			new Promise((res, rej) => {
-				let img = new Image(rem(60), rem(60));
+				let img = new Image(60, 60);
 				img.src = document.querySelector('.collage-hidden__trash').src;
-				let w = rem(60);
-				let h = rem(60);
+				let w = 60;
+				let h = 60;
 
 				img.onload = function () {
 					let canvImg = new Konva.Image({
@@ -290,6 +290,7 @@ function collage(settings, callback) {
 				res(group);
 			}
 		}).then((r) => {
+			console.log(item);
 			return new Promise((res, rej) => {
 				console.log('photo-img');
 				let photoImg = new Konva.Image({
@@ -297,8 +298,8 @@ function collage(settings, callback) {
 					image: photo,
 					width: item.width,
 					height: item.height,
-					x: rem(12),
-					y: rem(13),
+					x: rem(10),
+					y: rem(12),
 				});
 
 				console.log(photoImg.image());
@@ -409,7 +410,7 @@ function collage(settings, callback) {
 	}
 
 	const placeImageToAvatar = (e) => {
-		console.dir(e.target);
+		console.log(e.target);
 		e.target.onchange = evt => {
 			const [file] = e.target.files
 			if (file) {
@@ -417,7 +418,7 @@ function collage(settings, callback) {
 					return console.error('file must be .png or .jpg');
 				}
 
-				document.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(file);
+				e.target.parentElement.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(file);
 				e.target.parentNode.classList.add('has-photo')
 			}
 		}
@@ -474,10 +475,8 @@ function collage(settings, callback) {
 		}
 		
 		if(shape.hasName('photo')){
-			console.log(shape);
-			let photo = stage.find(node => {
-				return node.hasName('item') && node.hasName('photo');
-			})[0]
+			console.log(shape.findAncestor('.item'));
+			let photo = shape.findAncestor('.item', true);
 			
 			console.log(photo);
 			photo.addName('active');
@@ -504,10 +503,8 @@ function collage(settings, callback) {
 			layer.draw();
 		} 
 		
-		// if (settings.isMobile) {
-			// 	transformer.visible(false);
-			// }
 		layer.draw();
+
 	});
 
 
@@ -516,24 +513,17 @@ function collage(settings, callback) {
 		content.destroyChildren();
 		layer.draw();
 
+		document.querySelectorAll('.collage-item').forEach(el => {
+			el.classList.remove('has-photo');
+		})
+
 		transformer = new Konva.Transformer(transformerSettings);
 		content.add(transformer);
 	}
 
 	function makeScreenshot(callback) {
 		transformer.visible(false)
-		// function downloadURI(uri, name) {
-		// 	var link = document.createElement('a');
-		// 	link.download = name;
-		// 	link.href = uri;
-		// 	document.body.appendChild(link);
-		// 	// link.click();
-		// 	// document.body.removeChild(link);
-		// 	// delete link;
-
-		// }
 		var dataURL = stage.toDataURL();
-		// downloadURI(dataURL, `collage-${makeid(5)}.png`);
 		transformer.visible(true);
 
 		if (callback) {
