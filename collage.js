@@ -76,13 +76,13 @@ function getCrop(image, size, clipPosition = 'center-middle') {
 }
 
 function rem(valueInPx) {
-	res = (window.innerWidth / 1440) * valueInPx
-
-	if (window.innerWidth == 376) {
-		res = (window.innerWidth / 376) * valueInPx
+	let k = 1440;
+	if(window.innerWidth <= 376){
+		k = 376
 	}
-	res = valueInPx
-	return res;
+	let rem = (window.innerWidth / k) * valueInPx
+
+	return rem;
 }
 
 function collage(settings, callback) {
@@ -97,7 +97,7 @@ function collage(settings, callback) {
 						<div class="collage-avatar collage-item" data-type='${img.type}' data-id='${img.id}' data-border-src='${img.src}'>
 							<input class='collage-avatar__input'  type='file'></input>
 							<div class='collage-avatar-userpic'>
-								<img class='collage-avatar-userpic__img'  src='' width="133rem" height="123rem"/>
+								<img class='collage-avatar-userpic__img'  src='' />
 							</div>
 							<img class='collage-avatar__pin' src='${img.srcPin}' />
 							<img class='collage-avatar__border' src='${img.src}'/>
@@ -247,7 +247,7 @@ function collage(settings, callback) {
 
 	const addPhoto = (item) => {
 		const photo = new Image(item.width, item.height);
-		const borderImg = item.parentElement.parentElement.querySelectorAll('img')[2]
+		const borderImg = item.parentElement.parentElement.querySelector('.collage-avatar__border');
 		const border = new Image(borderImg.width, borderImg.height);
 		const pinImg = item.parentElement.parentElement.querySelector('.collage-avatar__pin');
 		const pin = new Image(pinImg.width, pinImg.height);
@@ -281,8 +281,8 @@ function collage(settings, callback) {
 				let borderBG = new Konva.Image({
 					name: 'photo photo-bg',
 					image: border,
-					width: borderImg.width,
-					height: borderImg.height,
+					width: rem(157),
+					height: rem(157),
 				});
 
 				group.add(borderBG);
@@ -291,28 +291,30 @@ function collage(settings, callback) {
 			}
 		}).then((r) => {
 			console.log(item);
+			console.log(item.parentElement.width);
+			console.log(item.height);
 			return new Promise((res, rej) => {
 				console.log('photo-img');
 				let photoImg = new Konva.Image({
 					name: 'photo photo-img',
 					image: photo,
-					width: item.width,
-					height: item.height,
 					x: rem(10),
-					y: rem(12),
+					y: rem(9),
+					width: rem(139),
+					height: rem(129),
 				});
 
 				console.log(photoImg.image());
-				// const newCrop = getCrop(
-				// 	photo,
-				// 	{ width: photoImg.width(), height: photoImg.height() },
-				// 	'center-middle'
-				// );
+				const newCrop = getCrop(
+					photo,
+					{ width: photoImg.width(), height: photoImg.height() },
+					'center-middle'
+				);
 				
-				// console.log(newCrop);
+				console.log(newCrop);
 				console.log(photoImg);
 
-				// photoImg.setAttrs(newCrop)
+				photoImg.setAttrs(newCrop)
 
 				group.add(photoImg);
 				res(r)
@@ -325,8 +327,8 @@ function collage(settings, callback) {
 					image: pin,
 					width: pin.width,
 					height: pin.height,
-					x: (borderImg.width / 2) - pin.width / 2,
-					y: rem(-24),
+					x: (r.find('.photo-bg')[0].width() / 2) - pin.width / 2,
+					y: rem(-30),
 				});
 
 				group.add(pinImg);
@@ -525,6 +527,7 @@ function collage(settings, callback) {
 		transformer.visible(false)
 		var dataURL = stage.toDataURL();
 		transformer.visible(true);
+		toggleTrash('hide');
 
 		if (callback) {
 			callback(dataURL);
