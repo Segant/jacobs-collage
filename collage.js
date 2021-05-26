@@ -77,7 +77,7 @@ function getCrop(image, size, clipPosition = 'center-middle') {
 
 function rem(valueInPx) {
 	let k = 1440;
-	if(window.innerWidth <= 376){
+	if (window.innerWidth <= 376) {
 		k = 376
 	}
 	let rem = (window.innerWidth / k) * valueInPx
@@ -154,7 +154,7 @@ function collage(settings, callback) {
 						height: h,
 						opacity: 0,
 					});
-					if(settings.isMobile){
+					if (settings.isMobile) {
 						canvImg.x(canvas.width / 2 - (w / 2));
 						canvImg.y(canvas.height - h - rem(13))
 					}
@@ -168,11 +168,11 @@ function collage(settings, callback) {
 
 	}
 
-	function toggleTrash(state = 'hide'){
-		if(state == 'hide'){
+	function toggleTrash(state = 'hide') {
+		if (state == 'hide') {
 			stage.find('.trash').opacity(0)
 		}
-		if(state == 'show'){
+		if (state == 'show') {
 			stage.find('.trash').opacity(1)
 		}
 
@@ -246,7 +246,7 @@ function collage(settings, callback) {
 	}
 
 	const addPhoto = (item) => {
-		const photo = new Image(item.width, item.height);
+		const photo = new Image(item.naturalWidth, item.naturalHeight);
 		const borderImg = item.parentElement.parentElement.querySelector('.collage-avatar__border');
 		const border = new Image(borderImg.width, borderImg.height);
 		const pinImg = item.parentElement.parentElement.querySelector('.collage-avatar__pin');
@@ -255,11 +255,7 @@ function collage(settings, callback) {
 		border.src = borderImg.src;
 		photo.src = item.src;
 
-		//debug
-		// photo.src = 'img/6CbzmM-CLzU.jpg';
-		
 		pin.src = pinImg.src;
-		// transformer.nodes([])
 
 		const group = new Konva.Group({
 			name: 'item photo',
@@ -295,6 +291,10 @@ function collage(settings, callback) {
 			console.log(item.height);
 			return new Promise((res, rej) => {
 				console.log('photo-img');
+				
+				let cw = rem(139);
+				let ch = rem(129);
+				
 				let photoImg = new Konva.Image({
 					name: 'photo photo-img',
 					image: photo,
@@ -302,20 +302,25 @@ function collage(settings, callback) {
 					y: rem(9),
 					width: rem(139),
 					height: rem(129),
+					// scaleX: 0.17,
+					// scaleY: 0.12,
 				});
+				// const aspectRatio = photoImg.width() / photoImg.height();
+				// photoImg.scaleX(cw / photoImg.width());
+				// photoImg.scaleY(ch / photoImg.height());
 
+				
 				console.log(photoImg.image());
 				const newCrop = getCrop(
-					photo,
-					{ width: photoImg.width(), height: photoImg.height() },
+					photoImg.image(),
+					{ width: rem(139), height: rem(129) },
 					'center-middle'
 				);
-				
-				console.log(newCrop);
-				console.log(photoImg);
 
 				photoImg.setAttrs(newCrop)
-
+				// console.log(item);
+				// console.log(newCrop);
+				// console.log(photoImg);
 				group.add(photoImg);
 				res(r)
 			})
@@ -333,82 +338,14 @@ function collage(settings, callback) {
 
 				group.add(pinImg);
 				res(r)
-				layer.batchDraw();
+				layer.draw();
 			})
 		}).then((r) => {
-			layer.batchDraw();
+			layer.draw();
 			r.width(r.getClientRect().width)
 			r.height(r.getClientRect().height)
-			// transformer.nodes([r])
 		})
 
-	}
-
-	const touchScale = (canvasItem) => {
-		canvasItem.on('touchmove', function (e) {
-			e.evt.preventDefault();
-			var touch1 = e.evt.touches[0];
-			var touch2 = e.evt.touches[1];
-
-			if (touch1 && touch2) {
-				// if the stage was under Konva's drag&drop
-				// we need to stop it, and implement our own pan logic with two pointers
-				if (canvasItem.isDragging()) {
-					canvasItem.stopDrag();
-				}
-
-				var p1 = {
-					x: touch1.clientX,
-					y: touch1.clientY,
-				};
-				var p2 = {
-					x: touch2.clientX,
-					y: touch2.clientY,
-				};
-
-				if (!lastCenter) {
-					lastCenter = getCenter(p1, p2);
-					return;
-				}
-				var newCenter = getCenter(p1, p2);
-
-				var dist = getDistance(p1, p2);
-
-				if (!lastDist) {
-					lastDist = dist;
-				}
-
-				// local coordinates of center point
-				var pointTo = {
-					x: (newCenter.x - canvasItem.x()) / canvasItem.scaleX(),
-					y: (newCenter.y - canvasItem.y()) / canvasItem.scaleX(),
-				};
-
-				var scale = canvasItem.scaleX() * (dist / lastDist);
-
-				canvasItem.scaleX(scale);
-				canvasItem.scaleY(scale);
-
-				// calculate new position of the stage
-				var dx = newCenter.x - lastCenter.x;
-				var dy = newCenter.y - lastCenter.y;
-
-				var newPos = {
-					x: newCenter.x - pointTo.x * scale + dx,
-					y: newCenter.y - pointTo.y * scale + dy,
-				};
-
-				canvasItem.position(newPos);
-
-				lastDist = dist;
-				lastCenter = newCenter;
-			}
-		});
-
-		canvasItem.on('touchend', function () {
-			lastDist = 0;
-			lastCenter = null;
-		});
 	}
 
 	const placeImageToAvatar = (e) => {
@@ -417,7 +354,7 @@ function collage(settings, callback) {
 			const [file] = e.target.files
 			if (file) {
 				if (!(file.type == 'image/png' || file.type == 'image/jpeg')) {
-					return console.error('file must be .png or .jpg');
+					return console.error('file extention must be .png or .jpg');
 				}
 
 				e.target.parentElement.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(file);
@@ -462,7 +399,7 @@ function collage(settings, callback) {
 			transformer.visible(false);
 			toggleTrash('hide');
 		}
-		
+
 		if (shape.hasName('item')) {
 			stage.find('.item').removeName('active');
 			console.log(shape);
@@ -472,26 +409,26 @@ function collage(settings, callback) {
 			transformer.moveToTop();
 			transformer.visible(true);
 			toggleTrash('show');
-			
+
 			layer.draw();
 		}
-		
-		if(shape.hasName('photo')){
+
+		if (shape.hasName('photo')) {
 			console.log(shape.findAncestor('.item'));
 			let photo = shape.findAncestor('.item', true);
-			
+
 			console.log(photo);
 			photo.addName('active');
 			toggleTrash('show');
-			
+
 			transformer.nodes([photo]);
 			transformer.visible(true);
 			layer.draw();
 
 			return
 		}
-		
-		if(shape.name() == 'trash'){
+
+		if (shape.name() == 'trash') {
 			let activeNode = stage.find((node) => {
 				return node.hasName('item') && node.hasName('active');
 			})[0];
@@ -503,8 +440,8 @@ function collage(settings, callback) {
 			toggleTrash('hide');
 
 			layer.draw();
-		} 
-		
+		}
+
 		layer.draw();
 
 	});
