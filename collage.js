@@ -291,10 +291,9 @@ function collage(settings, callback) {
 			console.log(item.height);
 			return new Promise((res, rej) => {
 				console.log('photo-img');
-				
-				let cw = rem(139);
-				let ch = rem(129);
-				
+
+				// photo
+
 				let photoImg = new Konva.Image({
 					name: 'photo photo-img',
 					image: photo,
@@ -308,9 +307,9 @@ function collage(settings, callback) {
 				// const aspectRatio = photoImg.width() / photoImg.height();
 				// photoImg.scaleX(cw / photoImg.width());
 				// photoImg.scaleY(ch / photoImg.height());
-
+				let sImg = photoImg.image();
 				
-				console.log(photoImg.image());
+				console.log(sImg);
 				const newCrop = getCrop(
 					photoImg.image(),
 					{ width: rem(139), height: rem(129) },
