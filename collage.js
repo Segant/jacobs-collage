@@ -297,12 +297,7 @@ function collage(settings, callback) {
 					y: rem(9),
 					width: rem(139),
 					height: rem(129),
-					// scaleX: 0.17,
-					// scaleY: 0.12,
 				});
-				// const aspectRatio = photoImg.width() / photoImg.height();
-				// photoImg.scaleX(cw / photoImg.width());
-				// photoImg.scaleY(ch / photoImg.height());
 				let sImg = photoImg.image();
 
 				console.log(sImg);
@@ -313,9 +308,7 @@ function collage(settings, callback) {
 				);
 
 				photoImg.setAttrs(newCrop);
-				// console.log(item);
-				// console.log(newCrop);
-				// console.log(photoImg);
+
 				group.add(photoImg);
 				res(r)
 			})
@@ -351,8 +344,7 @@ function collage(settings, callback) {
 				if (!(file.type == 'image/png' || file.type == 'image/jpeg')) {
 					return console.error('file extention must be .png or .jpg');
 				}
-
-				console.log(file);
+				
 				downscale(file, 500, 500, {returnBlob: 1}).then((b64) => { // b64 also blob
 					e.target.parentElement.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(b64);
 					e.target.parentNode.classList.add('has-photo')
@@ -461,10 +453,16 @@ function collage(settings, callback) {
 
 	function makeScreenshot(callback) {
 		transformer.visible(false)
+
 		var dataURL = stage.toDataURL();
-		transformer.visible(true);
+		stage.width(1000);
+		stage.height(1000);
 		toggleTrash('hide');
 
+		transformer.visible(true);
+		stage.width(canvas.width);
+		stage.height(canvas.height);
+		
 		if (callback) {
 			callback(dataURL);
 		}
