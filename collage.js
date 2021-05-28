@@ -246,7 +246,7 @@ function collage(settings, callback) {
 	}
 
 	const addPhoto = (item) => {
-		const photo = new Image(item.naturalWidth, item.naturalHeight);
+		let photo = new Image(item.naturalWidth, item.naturalHeight);
 		const borderImg = item.parentElement.parentElement.querySelector('.collage-avatar__border');
 		const border = new Image(borderImg.width, borderImg.height);
 		const pinImg = item.parentElement.parentElement.querySelector('.collage-avatar__pin');
@@ -254,9 +254,6 @@ function collage(settings, callback) {
 
 		border.src = borderImg.src;
 		photo.src = item.src;
-
-		pin.src = pinImg.src;
-
 		const group = new Konva.Group({
 			name: 'item photo',
 			x: canvas.width / 2 - (item.width / 2),
@@ -293,7 +290,6 @@ function collage(settings, callback) {
 				console.log('photo-img');
 
 				// photo
-
 				let photoImg = new Konva.Image({
 					name: 'photo photo-img',
 					image: photo,
@@ -308,7 +304,7 @@ function collage(settings, callback) {
 				// photoImg.scaleX(cw / photoImg.width());
 				// photoImg.scaleY(ch / photoImg.height());
 				let sImg = photoImg.image();
-				
+
 				console.log(sImg);
 				const newCrop = getCrop(
 					photoImg.image(),
@@ -316,7 +312,7 @@ function collage(settings, callback) {
 					'center-middle'
 				);
 
-				photoImg.setAttrs(newCrop)
+				photoImg.setAttrs(newCrop);
 				// console.log(item);
 				// console.log(newCrop);
 				// console.log(photoImg);
@@ -356,8 +352,11 @@ function collage(settings, callback) {
 					return console.error('file extention must be .png or .jpg');
 				}
 
-				e.target.parentElement.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(file);
-				e.target.parentNode.classList.add('has-photo')
+				console.log(file);
+				downscale(file, 500, 500, {returnBlob: 1}).then((b64) => { // b64 also blob
+					e.target.parentElement.querySelector('.collage-avatar-userpic__img').src = URL.createObjectURL(b64);
+					e.target.parentNode.classList.add('has-photo')
+				})
 			}
 		}
 	}
