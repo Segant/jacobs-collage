@@ -474,7 +474,7 @@ function collage(settings, callback) {
 		stage.height(screenShotSize);
 		stage.scale({x: adjustScale(canvas.width, screenShotSize), y: adjustScale(canvas.width, screenShotSize)});
 		var dataURL = stage.toDataURL();
-		downloadURI(dataURL, `collage-${makeid(5)}.png`);
+		// downloadURI(dataURL, `collage-${makeid(5)}.png`);
 		toggleTrash('hide');
 		
 		transformer.visible(true);
