@@ -325,15 +325,14 @@ function collage(settings, callback) {
 				console.log('pin');
 
 				group.add(pinImg);
-				layer.draw();
+				layer.batchDraw();
 				res(r)
 			})
 		}).then((r) => {
-			layer.draw();
 			r.width(r.getClientRect().width)
 			r.height(r.getClientRect().height)
 		})
-
+		
 	}
 
 	const placeImageToAvatar = (e) => {
