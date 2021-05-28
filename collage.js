@@ -449,6 +449,7 @@ function collage(settings, callback) {
 	function resetCollage() {
 		document.querySelectorAll('.collage-item').forEach(el => el.classList.remove('active'));
 		content.destroyChildren();
+		toggleTrash('hide');
 		layer.draw();
 
 		document.querySelectorAll('.collage-item').forEach(el => {
