@@ -461,12 +461,13 @@ function collage(settings, callback) {
 			document.body.removeChild(link);
 			delete link;
 		}
-
+		
 		function adjustScale(curSize, reqSize){
 			const scale = reqSize / curSize
 			return scale
 		}
-
+		
+		toggleTrash('hide');
 		transformer.visible(false)
 
 		const screenShotSize = 1000; //px
@@ -475,7 +476,6 @@ function collage(settings, callback) {
 		stage.scale({x: adjustScale(canvas.width, screenShotSize), y: adjustScale(canvas.width, screenShotSize)});
 		var dataURL = stage.toDataURL();
 		// downloadURI(dataURL, `collage-${makeid(5)}.png`);
-		toggleTrash('hide');
 		
 		transformer.visible(true);
 		stage.scale({x: 1, y: 1});
