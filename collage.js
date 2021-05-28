@@ -254,6 +254,7 @@ function collage(settings, callback) {
 
 		border.src = borderImg.src;
 		photo.src = item.src;
+		pin.src = pinImg.src;
 		const group = new Konva.Group({
 			name: 'item photo',
 			x: canvas.width / 2 - (item.width / 2),
@@ -283,9 +284,6 @@ function collage(settings, callback) {
 				res(group);
 			}
 		}).then((r) => {
-			console.log(item);
-			console.log(item.parentElement.width);
-			console.log(item.height);
 			return new Promise((res, rej) => {
 				console.log('photo-img');
 
@@ -323,10 +321,12 @@ function collage(settings, callback) {
 					x: (r.find('.photo-bg')[0].width() / 2) - pin.width / 2,
 					y: rem(-30),
 				});
+				console.log(pin);
+				console.log('pin');
 
 				group.add(pinImg);
-				res(r)
 				layer.draw();
+				res(r)
 			})
 		}).then((r) => {
 			layer.draw();
