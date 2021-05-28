@@ -452,14 +452,33 @@ function collage(settings, callback) {
 	}
 
 	function makeScreenshot(callback) {
+		function downloadURI(uri, name) {
+			var link = document.createElement('a');
+			link.download = name;
+			link.href = uri;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			delete link;
+		}
+
+		function adjustScale(curSize, reqSize){
+			const scale = reqSize / curSize
+			return scale
+		}
+
 		transformer.visible(false)
 
+		const screenShotSize = 1000; //px
+		stage.width(screenShotSize);
+		stage.height(screenShotSize);
+		stage.scale({x: adjustScale(canvas.width, screenShotSize), y: adjustScale(canvas.width, screenShotSize)});
 		var dataURL = stage.toDataURL();
-		stage.width(1000);
-		stage.height(1000);
+		downloadURI(dataURL, `collage-${makeid(5)}.png`);
 		toggleTrash('hide');
-
+		
 		transformer.visible(true);
+		stage.scale({x: 1, y: 1});
 		stage.width(canvas.width);
 		stage.height(canvas.height);
 		
