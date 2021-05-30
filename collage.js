@@ -133,7 +133,29 @@ function collage(settings, callback) {
 					// width: canvas.width,
 					// height: canvas.height,
 				});
+
+				const textName = new Konva.Text({
+					text: settings.textName || '',
+					x: 0,
+					// y: rem(90),
+					fontSize: rem(18),
+					fontFamily: 'Gotham Pro',
+					fill: 'white',
+					// rotation : -4.2,
+				})
+
+				
+				textName.x(rem(55 + (210 / 2 - (textName.width() / 2))));
+
+				textName.offsetX(textName.width() / 2);
+				textName.offsetY(textName.height() / 2);
+				textName.x(textName.x() + textName.width() / 2);
+				textName.y(textName.y() + textName.height() / 2);
+				textName.y(rem(98))
+				textName.rotation(-4.2)
+				
 				misc.add(bgImg);
+				misc.add(textName);
 				layer.batchDraw();
 				res();
 			}
@@ -194,8 +216,7 @@ function collage(settings, callback) {
 	let content = new Konva.Group({ name: 'view' });
 
 	const layer = new Konva.Layer();
-	layer.add(misc);
-
+	
 	const transformerSettings = {
 		name: 'transformer',
 		anchorStroke: 'white',
@@ -205,15 +226,15 @@ function collage(settings, callback) {
 		enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
 		nodes: [],
 	}
-
+	
 	let transformer;
 	transformer = new Konva.Transformer(transformerSettings);
 	content.add(transformer);
-
-
-
+	
+	layer.add(misc);
 	layer.add(content);
 
+	
 	placeBackground();
 
 
