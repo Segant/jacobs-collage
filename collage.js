@@ -77,9 +77,10 @@ function getCrop(image, size, clipPosition = 'center-middle') {
 
 function rem(valueInPx) {
 	let k = 1440;
-	// if (window.innerWidth <= 376) {
-	// 	// k = 376
-	// }
+	if (window.innerWidth <= 1000) {
+		k = 376
+	}
+	console.log(k, 'k');
 	let rem = (window.innerWidth / k) * valueInPx
 
 	return rem;
@@ -295,6 +296,7 @@ function collage(settings, callback) {
 			}
 		});
 
+		console.log(item);
 		content.add(group);
 
 		let borderBG;
@@ -326,6 +328,8 @@ function collage(settings, callback) {
 					width: rem(139),
 					height: rem(129),
 				});
+
+
 				let sImg = photoImg.image();
 
 				console.log(sImg);
