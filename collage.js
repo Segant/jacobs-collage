@@ -136,23 +136,24 @@ function collage(settings, callback) {
 				});
 
 				const textName = new Konva.Text({
-					text: settings.textName || '',
+					text: settings.textName.toUpperCase() || '',
 					x: 0,
-					// y: rem(90),
+					y: rem(90),
 					fontSize: rem(14), // lnh 21px
 					fontFamily: 'Gotham Pro',
 					fill: 'white',
 					// rotation : -4.2,
 				})
 
-				
-				textName.x(rem(55 + (210 / 2 - (textName.width() / 2))));
+				// rem(55 + (210 / 2 - (textName.width() / 2)))
+				textName.x(70 + (250 / 2 - (textName.width() / 2)));
 
 				textName.offsetX(textName.width() / 2);
 				textName.offsetY(textName.height() / 2);
 				textName.x(textName.x() + textName.width() / 2);
 				textName.y(textName.y() + textName.height() / 2);
-				textName.y(rem(98))
+
+				// textName.y(rem(98))
 				textName.rotation(-4.2)
 				
 				misc.add(bgImg);
