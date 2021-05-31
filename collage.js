@@ -80,7 +80,6 @@ function rem(valueInPx) {
 	if (window.innerWidth <= 1000) {
 		k = 376
 	}
-	console.log(k, 'k');
 	let rem = (window.innerWidth / k) * valueInPx
 
 	return rem;
@@ -141,12 +140,20 @@ function collage(settings, callback) {
 					y: rem(90),
 					fontSize: rem(14), // lnh 21px
 					fontFamily: 'Gotham Pro',
+					shadowBlur: 10,
+					shadowOffset: { x: 0, y: 4 },
+					shadowOpacity: 0.5,
 					fill: 'white',
 					// rotation : -4.2,
 				})
 
 				// rem(55 + (210 / 2 - (textName.width() / 2)))
 				textName.x(rem(58) + (rem(210) / 2) - (textName.width() / 2));
+
+				if(settings.isMobile){
+					textName.y(rem(60)); 
+					textName.x(rem(40) + rem(140 / 2) - (textName.width() / 2));
+				}
 
 				// textName.offsetX(textName.width() / 2);
 				// textName.offsetY(textName.height() / 2);
