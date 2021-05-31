@@ -146,12 +146,12 @@ function collage(settings, callback) {
 				})
 
 				// rem(55 + (210 / 2 - (textName.width() / 2)))
-				textName.x(70 + (250 / 2 - (textName.width() / 2)));
+				textName.x(rem(58) + (rem(210) / 2) - (textName.width() / 2));
 
-				textName.offsetX(textName.width() / 2);
-				textName.offsetY(textName.height() / 2);
-				textName.x(textName.x() + textName.width() / 2);
-				textName.y(textName.y() + textName.height() / 2);
+				// textName.offsetX(textName.width() / 2);
+				// textName.offsetY(textName.height() / 2);
+				// textName.x(textName.x() + textName.width() / 2);
+				// textName.y(textName.y() + textName.height() / 2);
 
 				// textName.y(rem(98))
 				textName.rotation(-4.2)
