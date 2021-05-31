@@ -151,6 +151,7 @@ function collage(settings, callback) {
 				textName.x(rem(58) + (rem(210) / 2) - (textName.width() / 2));
 
 				if(settings.isMobile){
+					textName.fontSize(rem(11))
 					textName.y(rem(60)); 
 					textName.x(rem(40) + rem(140 / 2) - (textName.width() / 2));
 				}
