@@ -253,13 +253,19 @@ function collage(settings, callback) {
 				x: canvas.width / 2 - (item.width / 2),
 				y: canvas.height / 2 - (item.height / 2),
 				image: img,
-				width: item.width / 2,
-				height: item.height / 2,
+				width: item.width,
+				height: item.height,
 				draggable: true,
 				data: {
 					id: item.dataset.id
 				}
 			});
+
+			if(settings.isMobile){
+				canvasImg.width(item.width)
+				canvasImg.height(item.height)
+			}
+
 			content.add(canvasImg);
 			transformer.nodes([])
 			layer.batchDraw();
