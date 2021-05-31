@@ -176,6 +176,10 @@ body{
 	align-items: flex-start;
 	padding-bottom: 100rem;
 }
+[data-id='4'] {
+	width: 193rem;
+    height: 147rem;
+}
 .collage-mobile-items__close {
 	position: fixed;
 	bottom: 30rem;

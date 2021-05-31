@@ -175,7 +175,7 @@ function collage(settings, callback) {
 						image: img,
 						width: w,
 						height: h,
-						opacity: 0,
+						visible: false,
 					});
 					if (settings.isMobile) {
 						canvImg.x(canvas.width / 2 - (w / 2));
@@ -193,10 +193,10 @@ function collage(settings, callback) {
 
 	function toggleTrash(state = 'hide') {
 		if (state == 'hide') {
-			stage.find('.trash').opacity(0)
+			stage.find('.trash').visible(false)
 		}
 		if (state == 'show') {
-			stage.find('.trash').opacity(1)
+			stage.find('.trash').visible(true)
 		}
 
 		layer.draw();
@@ -243,6 +243,7 @@ function collage(settings, callback) {
 
 
 	const addItem = (item) => {
+		console.log(item.height);
 		let img = new Image(item.width, item.height);
 
 		img.onload = function () {
@@ -253,18 +254,18 @@ function collage(settings, callback) {
 				x: canvas.width / 2 - (item.width / 2),
 				y: canvas.height / 2 - (item.height / 2),
 				image: img,
-				width: item.width,
-				height: item.height,
+				width: img.width,
+				height: img.height,
 				draggable: true,
 				data: {
 					id: item.dataset.id
 				}
 			});
 
-			if(settings.isMobile){
-				canvasImg.width(item.width)
-				canvasImg.height(item.height)
-			}
+			// if(settings.isMobile){
+			// 	canvasImg.width(item.width)
+			// 	canvasImg.height(item.height)
+			// }
 
 			content.add(canvasImg);
 			transformer.nodes([])
