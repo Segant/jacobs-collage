@@ -137,7 +137,7 @@ function collage(settings, callback) {
 				const textName = new Konva.Text({
 					text: settings.textName.toUpperCase() || '',
 					x: 0,
-					y: rem(90),
+					y: rem(92),
 					fontSize: rem(14), // lnh 21px
 					fontFamily: 'Gotham Pro',
 					shadowBlur: 10,
@@ -151,8 +151,8 @@ function collage(settings, callback) {
 				textName.x(rem(58) + (rem(210) / 2) - (textName.width() / 2));
 
 				if(settings.isMobile){
-					textName.fontSize(rem(11))
-					textName.y(rem(60)); 
+					textName.fontSize(rem(10))
+					textName.y(rem(62)); 
 					textName.x(rem(40) + rem(140 / 2) - (textName.width() / 2));
 				}
 
