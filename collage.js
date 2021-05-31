@@ -77,9 +77,9 @@ function getCrop(image, size, clipPosition = 'center-middle') {
 
 function rem(valueInPx) {
 	let k = 1440;
-	if (window.innerWidth <= 376) {
-		k = 376
-	}
+	// if (window.innerWidth <= 376) {
+	// 	// k = 376
+	// }
 	let rem = (window.innerWidth / k) * valueInPx
 
 	return rem;
@@ -138,7 +138,7 @@ function collage(settings, callback) {
 					text: settings.textName || '',
 					x: 0,
 					// y: rem(90),
-					fontSize: rem(18),
+					fontSize: rem(14), // lnh 21px
 					fontFamily: 'Gotham Pro',
 					fill: 'white',
 					// rotation : -4.2,
@@ -160,6 +160,7 @@ function collage(settings, callback) {
 				res();
 			}
 		}).then(() => {
+			// trash
 			new Promise((res, rej) => {
 				let img = new Image(60, 60);
 				img.src = document.querySelector('.collage-hidden__trash').src;
@@ -246,13 +247,14 @@ function collage(settings, callback) {
 
 		img.onload = function () {
 			console.log('img load');
+			console.log(item);
 			let canvasImg = new Konva.Image({
 				name: 'item',
 				x: canvas.width / 2 - (item.width / 2),
 				y: canvas.height / 2 - (item.height / 2),
 				image: img,
-				width: item.width,
-				height: item.height,
+				width: item.width / 2,
+				height: item.height / 2,
 				draggable: true,
 				data: {
 					id: item.dataset.id
