@@ -251,8 +251,8 @@ function collage(settings, callback) {
 			console.log(item);
 			let canvasImg = new Konva.Image({
 				name: 'item',
-				x: canvas.width / 2 - (item.width / 2),
-				y: canvas.height / 2 - (item.height / 2),
+				x: canvas.width / 2 - (img.width / 2),
+				y: canvas.height / 2 - (img.height / 2),
 				image: img,
 				width: img.width,
 				height: img.height,
